@@ -37,7 +37,14 @@ typedef struct stack {
 void resize(stack *s);
 void pop(stack *s);
 
+int gettok();
+void parseBinOp();
+void parseExpression();
 int getOpPrec(char op);
 double computeBinOp(double lhs, double rhs, char op);
+
+extern stack *ops, *nums;
+extern int numVal, curTok;
+extern char lastChar;
 
 #endif
