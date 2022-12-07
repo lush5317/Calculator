@@ -3,3 +3,4 @@ main
 .vscode
 test.c
 *.o
+test_cal

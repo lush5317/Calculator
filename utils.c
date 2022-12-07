@@ -50,12 +50,11 @@ int getOpPrec(char op) {
     return 10;
   case '^':
     return 20;
-  case '(':
-    parseExpression();
-    gettok();
-    return getOpPrec(curTok);
-  case ')':
-
+  // case '(':
+  //   printf("%d", parseExpression());
+  //   gettok();
+  //   return getOpPrec(curTok);
+  // case ')':
   case EOF:
   case '\n':
     return -1;
@@ -79,7 +78,7 @@ double computeBinOp(double lhs, double rhs, char op) {
   }
 }
 
-void parseBinOp() {
+void parseBinOp(stack *ops, stack *nums) {
   if (ops->size == 0 && getOpPrec(curTok) <= 0) {
     return;
   }
@@ -97,18 +96,27 @@ void parseBinOp() {
     pop(ops);
 
     push(double, nums, computeBinOp(lhs, rhs, op));
-    parseBinOp();
+    parseBinOp(ops, nums);
   }
 }
 
-void parseExpression() {
+double parseExpression() {
+  stack *ops, *nums;
+  init(char, ops, 4);
+  init(double, nums, 4);
+
   do {
     curTok = gettok();
-    if (curTok == token_number) {
+    if (curTok == '(') {
+      double ret = parseExpression();
+      push(double, nums, ret);
+      lastChar = ' ';
+    } else if (curTok == token_number) {
       push(double, nums, numVal);
     } else {
-      parseBinOp();
+      parseBinOp(ops, nums);
     }
-  } while (lastChar != EOF && lastChar != '\n');
-  parseBinOp();
+  } while (lastChar != EOF && lastChar != '\n' && lastChar != ')');
+  parseBinOp(ops, nums);
+  return *(((double *)nums->ptr) + nums->top);
 }
