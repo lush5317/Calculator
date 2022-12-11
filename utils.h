@@ -21,9 +21,30 @@ typedef struct stack {
   do {                                                                         \
     s = (stack *)malloc(sizeof(stack));                                        \
     s->size = 0;                                                               \
-    s->capacity = c;                                                           \
+    s->capacity = 4;                                                           \
     s->ptr = (T *)malloc(c * sizeof(T));                                       \
     s->top = -1;                                                               \
+  } while (0)
+
+#define resize(T, s)                                                           \
+  do {                                                                         \
+    if (s->size >= s->capacity) {                                              \
+      s->capacity *= 2;                                                        \
+      void *temp = realloc(s->ptr, s->capacity * sizeof(T));                   \
+      if (!temp) {                                                             \
+        exit(1);                                                               \
+      } else {                                                                 \
+        s->ptr = temp;                                                         \
+      }                                                                        \
+    } else if (s->size <= s->capacity / 2 && s->size >= 8) {                   \
+      s->capacity /= 2;                                                        \
+      void *temp = realloc(s->ptr, s->capacity * sizeof(T));                   \
+      if (!temp) {                                                             \
+        exit(1);                                                               \
+      } else {                                                                 \
+        s->ptr = temp;                                                         \
+      }                                                                        \
+    }                                                                          \
   } while (0)
 
 #define push(T, s, v)                                                          \
@@ -31,11 +52,15 @@ typedef struct stack {
     T *ptr = (T *)s->ptr;                                                      \
     ptr[++s->top] = v;                                                         \
     s->size++;                                                                 \
-    resize(s);                                                                 \
+    resize(T, s);                                                              \
   } while (0)
 
-void resize(stack *s);
-void pop(stack *s);
+#define pop(T, s)                                                              \
+  do {                                                                         \
+    s->top--;                                                                  \
+    s->size--;                                                                 \
+    resize(T, s);                                                              \
+  } while (0)
 
 int gettok();
 void parseBinOp(stack *ops, stack *nums);

@@ -4,3 +4,4 @@ main
 test.c
 *.o
 test_cal
+*.zip

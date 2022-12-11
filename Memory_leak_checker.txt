@@ -1,0 +1,54 @@
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s ./test_cal                                                                                                           16:03:34
+==118099== Memcheck, a memory error detector
+==118099== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==118099== Using Valgrind-3.19.0 and LibVEX; rerun with -h for copyright info
+==118099== Command: ./test_cal
+==118099==
+[==========] Running 7 tests from 7 test suites.
+[----------] Global test environment set-up.
+[----------] 1 test from ADD
+[ RUN      ] ADD.simple_add
+[       OK ] ADD.simple_add (22 ms)
+[----------] 1 test from ADD (26 ms total)
+
+[----------] 1 test from MINUS
+[ RUN      ] MINUS.simple_minus
+[       OK ] MINUS.simple_minus (1 ms)
+[----------] 1 test from MINUS (1 ms total)
+
+[----------] 1 test from MULT
+[ RUN      ] MULT.simple_mult
+[       OK ] MULT.simple_mult (1 ms)
+[----------] 1 test from MULT (1 ms total)
+
+[----------] 1 test from DIV
+[ RUN      ] DIV.simple_div
+[       OK ] DIV.simple_div (1 ms)
+[----------] 1 test from DIV (1 ms total)
+
+[----------] 1 test from POW
+[ RUN      ] POW.simple_pow
+[       OK ] POW.simple_pow (2 ms)
+[----------] 1 test from POW (2 ms total)
+
+[----------] 1 test from PARENTHESIS
+[ RUN      ] PARENTHESIS.parenthesis
+[       OK ] PARENTHESIS.parenthesis (1 ms)
+[----------] 1 test from PARENTHESIS (1 ms total)
+
+[----------] 1 test from GENERAL
+[ RUN      ] GENERAL.general
+[       OK ] GENERAL.general (2 ms)
+[----------] 1 test from GENERAL (2 ms total)
+
+[----------] Global test environment tear-down
+[==========] 7 tests from 7 test suites ran. (66 ms total)
+[  PASSED  ] 7 tests.
+==118099==
+==118099== HEAP SUMMARY:
+==118099==     in use at exit: 0 bytes in 0 blocks
+==118099==   total heap usage: 331 allocs, 331 frees, 133,462 bytes allocated
+==118099==
+==118099== All heap blocks were freed -- no leaks are possible
+==118099==
+==118099== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

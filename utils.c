@@ -1,22 +1,8 @@
 #include "utils.h"
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
-
-void resize(stack *s) {
-  if (s->size >= s->capacity) {
-    s->capacity *= 2;
-    s->ptr = realloc(s->ptr, s->capacity);
-  } else if (s->size <= s->capacity / 2 && s->size >= 8) {
-    s->capacity /= 2;
-    s->ptr = realloc(s->ptr, s->capacity);
-  }
-}
-
-void pop(stack *s) {
-  s->top--;
-  s->size--;
-  resize(s);
-}
+#include <stdlib.h>
 
 int gettok() {
   while (isspace(lastChar)) {
@@ -79,21 +65,23 @@ double computeBinOp(double lhs, double rhs, char op) {
 }
 
 void parseBinOp(stack *ops, stack *nums) {
-  if (ops->size == 0 && getOpPrec(curTok) <= 0) {
+  if ((ops->size == 0 && getOpPrec(curTok) <= 0)) {
     return;
   }
-  if (getOpPrec(curTok) > getOpPrec(*(((char *)ops->ptr) + ops->top))) {
+  if (ops->top < 0 ||
+      getOpPrec(curTok) > getOpPrec(*(((char *)ops->ptr) + ops->top))) {
     push(char, ops, curTok);
   } else {
     // compute
     int top = nums->top;
-    double *ptr = (double *)nums->ptr + top;
+    assert(nums->top >= 1);
+    double *ptr = ((double *)nums->ptr) + top;
     double lhs = *(ptr - 1), rhs = *ptr;
     char op = *(((char *)ops->ptr) + ops->top);
 
-    pop(nums);
-    pop(nums);
-    pop(ops);
+    pop(double, nums);
+    pop(double, nums);
+    pop(char, ops);
 
     push(double, nums, computeBinOp(lhs, rhs, op));
     parseBinOp(ops, nums);
@@ -104,6 +92,7 @@ double parseExpression() {
   stack *ops, *nums;
   init(char, ops, 4);
   init(double, nums, 4);
+  double ret;
 
   do {
     curTok = gettok();
@@ -118,5 +107,10 @@ double parseExpression() {
     }
   } while (lastChar != EOF && lastChar != '\n' && lastChar != ')');
   parseBinOp(ops, nums);
-  return *(((double *)nums->ptr) + nums->top);
+  ret = *(((double *)nums->ptr) + nums->top);
+  free(ops->ptr);
+  free(ops);
+  free(nums->ptr);
+  free(nums);
+  return ret;
 }
